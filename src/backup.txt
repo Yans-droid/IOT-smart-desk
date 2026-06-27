@@ -1,0 +1,74 @@
+#include <Arduino.h>
+#include <Wire.h>
+#include <Adafruit_GFX.h>
+#include <Adafruit_SSD1306.h>
+#include <DHT.h>
+
+#define SCREEN_WIDTH 128
+#define SCREEN_HEIGHT 64
+
+Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, -1);
+
+#define DHTPIN 4
+#define DHTTYPE DHT22
+#define PIR_PIN 27
+
+DHT dht(DHTPIN, DHTTYPE);
+
+void setup() {
+
+  Wire.begin(21, 22);
+
+  display.begin(SSD1306_SWITCHCAPVCC, 0x3C);
+  display.clearDisplay();
+
+  pinMode(PIR_PIN, INPUT);
+
+  dht.begin();
+}
+
+void loop() {
+
+  float temp = dht.readTemperature();
+  float hum = dht.readHumidity();
+
+  bool motion = digitalRead(PIR_PIN);
+
+  display.clearDisplay();
+
+  display.setTextSize(1);
+  display.setTextColor(SSD1306_WHITE);
+
+  display.setCursor(0,0);
+  display.println("SMART LAMP");
+
+  if (isnan(temp) || isnan(hum)) {
+
+    display.setCursor(0,20);
+    display.println("DHT ERROR!");
+
+  } else {
+
+    display.setCursor(0,18);
+    display.print("Temp : ");
+    display.print(temp);
+    display.println(" C");
+
+    display.setCursor(0,32);
+    display.print("Hum  : ");
+    display.print(hum);
+    display.println(" %");
+  }
+
+  display.setCursor(0,48);
+  display.print("PIR  : ");
+
+  if (motion)
+    display.println("YES");
+  else
+    display.println("NO");
+
+  display.display();
+
+  delay(1000);
+}
