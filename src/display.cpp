@@ -89,19 +89,15 @@ void displayUpdate(){
 
     display.println(" C");
 
-    display.print("Hum  : ");
-
+    display.print("Hum : ");
     display.print(state.humidity);
-
     display.println(" %");
+
+    display.print("Motion : ");
+    display.println(state.motion ? "YES" : "NO");
+
     display.print("WiFi : ");
-
-if(state.wifiConnected)
-    display.println("Connected");
-else
-    display.println("Disconnected");
-
-
+    display.println(state.wifiConnected ? "OK" : "OFF");
     display.display();
 
 }
